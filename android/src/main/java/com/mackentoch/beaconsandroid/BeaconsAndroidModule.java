@@ -42,6 +42,7 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
   private BeaconManager mBeaconManager;
   private Context mApplicationContext;
   private ReactApplicationContext mReactContext;
+  private Boolean requestedBeacons;
 
   public BeaconsAndroidModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -319,6 +320,12 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
       }
   }
 
+  @ReactMethod
+  public void setRequested() {
+      requestedBeacons = true;
+  }
+
+
   /***********************************************************************************************
    * Ranging
    **********************************************************************************************/
@@ -338,9 +345,10 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
   private RangeNotifier mRangeNotifier = new RangeNotifier() {
       @Override
       public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-    Log.d(LOG_TAG, "rangingConsumer didRangeBeaconsInRegion, beacons: " + beacons.toString());
-    Log.d(LOG_TAG, "rangingConsumer didRangeBeaconsInRegion, region: " + region.toString());
-    sendEvent(mReactContext, "beaconsDidRange", createRangingResponse(beacons, region));
+        if(requestedBeacons){
+            sendEvent(mReactContext, "beaconsDidRange", createRangingResponse(beacons, region));
+            requestedBeacons = false;
+        }
       }
   };
 
