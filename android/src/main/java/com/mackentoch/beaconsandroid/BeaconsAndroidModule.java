@@ -345,7 +345,7 @@ public class BeaconsAndroidModule extends ReactContextBaseJavaModule implements 
   private RangeNotifier mRangeNotifier = new RangeNotifier() {
       @Override
       public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-        if(requestedBeacons){
+        if(requestedBeacons != null && requestedBeacons == true){
             sendEvent(mReactContext, "beaconsDidRange", createRangingResponse(beacons, region));
             requestedBeacons = false;
         }
